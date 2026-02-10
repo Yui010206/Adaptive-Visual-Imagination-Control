@@ -2,7 +2,7 @@
 
 This is the official implementation for adaptive visual imagination control
 
-[![Project Website](https://img.shields.io/badge/Project-Website-blue)]()  [![arXiv](https://img.shields.io/badge/arXiv-2405.19209-b31b1b.svg)]()
+[![Project Website](https://img.shields.io/badge/Project-Website-blue)]()  [![arXiv](https://img.shields.io/badge/arXiv-2602.08236-b31b1b.svg)](https://arxiv.org/abs/2602.08236)
 
 ### Authors: [Shoubin Yu*](https://yui010206.github.io/), [Yue Zhang*](https://zhangyuejoslin.github.io/), [Zun Wang](https://zunwang1.github.io/), [Jaehong Yoon](https://jaehong31.github.io/), [Huaxiu Yao](https://huaxiuyao.strikingly.com/), [Mingyu Ding](https://dingmyu.github.io/), [Mohit Bansal](https://www.cs.unc.edu/~mbansal/)
 
@@ -79,6 +79,6 @@ Please cite our paper if you use our models in your works:
 @article{yu2026when,
   author    = {Shoubin Yu, Yue Zhang, Zun Wang, Jaehong Yoon, Huaxiu Yao, Mingyu Ding, Mohit Bansal},
   title     = {When and How Much to Imagine: Adaptive Test-Time Scaling with World Models for Visual Spatial Reasoning},
-  journal   = {arxiv},
+  journal   = {arxiv: 2602.08236},
   year      = {2026},
 }
