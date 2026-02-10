@@ -43,7 +43,7 @@ You need to
 
 (2) And then install MapGPT dependencies and data.
 
-(3) install stable virtual camera as in visual spatial reasoning 
+(3) install stable virtual camera as in visual spatial reasoning. 
 
 We install environment with docker, and re-compile Matterport3D with python 3.10,
 in this case, you will need to download anaconda in the docker environment. 
