@@ -2,7 +2,7 @@
 
 This is the official implementation for adaptive visual imagination control
 
-[![Project Website](https://img.shields.io/badge/Project-Website-blue)]()  [![arXiv](https://img.shields.io/badge/arXiv-2602.08236-b31b1b.svg)](https://arxiv.org/abs/2602.08236)
+[![Project Website](https://img.shields.io/badge/Project-Website-blue)](https://adaptive-visual-tts.github.io/)  [![arXiv](https://img.shields.io/badge/arXiv-2602.08236-b31b1b.svg)](https://arxiv.org/abs/2602.08236)
 
 ### Authors: [Shoubin Yu*](https://yui010206.github.io/), [Yue Zhang*](https://zhangyuejoslin.github.io/), [Zun Wang](https://zunwang1.github.io/), [Jaehong Yoon](https://jaehong31.github.io/), [Huaxiu Yao](https://huaxiuyao.strikingly.com/), [Mingyu Ding](https://dingmyu.github.io/), [Mohit Bansal](https://www.cs.unc.edu/~mbansal/)
 
