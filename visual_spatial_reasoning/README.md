@@ -1,5 +1,7 @@
 # Visual Spatial Reasoning — Adaptive Visual Imagination Control (AVIC)
 
+[![Project Website](https://img.shields.io/badge/Project-Website-blue)](https://adaptive-visual-tts.github.io/)  [![arXiv](https://img.shields.io/badge/arXiv-2602.08236-b31b1b.svg)](https://arxiv.org/abs/2602.08236)  [![Hugging Face Model](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-yellow)](https://huggingface.co/Shoubin/AVIC-Qwen2.5-VL-7B-policy)
+
 This folder contains the **visual spatial reasoning** experiments for *When and
 How Much to Imagine: Adaptive Test-Time Scaling with World Models for Visual
 Spatial Reasoning*, evaluated on the [SAT](https://huggingface.co/datasets/array/SAT)
