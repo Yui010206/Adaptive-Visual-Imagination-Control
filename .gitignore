@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+
+# Training / inference outputs
+results/
+nips_results/
+checkpoints/
+logs/
+tmp/
+wandb/
+*.log
+
+# Data artifacts (keep curated splits like data/*.json that are committed explicitly)
+data/train/
+data/val/
+data/test/
+data/*_prescored*.jsonl
+data/train_sample_*.json
+
+# Model weights / adapters
+*.safetensors
+*.bin
+adapter_step*/

@@ -234,6 +234,90 @@ def _get_svc_args(parser):
         default=0.5
         )
 
+    # ----- Closed-source VLM backend -----
+    parser.add_argument(
+        "--provider",
+        type=str,
+        default="azure",
+        choices=["azure", "gemini"],
+        help="Backend for closed-source VLM API calls (azure or gemini).",
+    )
+
+    # ----- Direct-QA sampling (pipeline_direct_qa_sampling) -----
+    parser.add_argument(
+        "--num_samples",
+        type=int,
+        default=1,
+        help="Number of times to sample the VLM per question (used by direct-QA sampling pipeline).",
+    )
+    parser.add_argument(
+        "--sampling_temperature",
+        type=float,
+        default=0.7,
+        help="Temperature used when --num_samples > 1. Ignored if pipeline uses greedy decoding.",
+    )
+    parser.add_argument(
+        "--sampling_top_p",
+        type=float,
+        default=1.0,
+        help="top_p used when --num_samples > 1.",
+    )
+    parser.add_argument(
+        "--sampling_base_seed",
+        type=int,
+        default=0,
+        help="Base seed; sample i uses base_seed + i. Set negative to disable seed (free sampling).",
+    )
+    parser.add_argument(
+        "--plan_on_wrong",
+        action="store_true",
+        default=False,
+        help="When direct-QA returns a wrong answer, call the policy model to plan world-model actions.",
+    )
+
+    # ----- Policy model (used by pipeline_avic in RL-policy mode) -----
+    parser.add_argument(
+        "--policy_model_type",
+        type=str,
+        default="gpt",
+        choices=["gpt", "qwen3vl", "qwen2.5vl"],
+        help="Which model to use for the policy (gating + planning) step. "
+             "'gpt' reuses the main self.vlm (Azure GPT-4o etc.); 'qwen3vl' / 'qwen2.5vl' "
+             "load a local Qwen-VL via AutoModelForImageTextToText.",
+    )
+    parser.add_argument(
+        "--policy_model_name",
+        type=str,
+        default="Qwen/Qwen2.5-VL-7B-Instruct",
+        help="HF model id for the qwen policy. Ignored when --policy_model_type=gpt.",
+    )
+    parser.add_argument(
+        "--policy_lora_ckpt",
+        type=str,
+        default=None,
+        help="Optional path to a LoRA adapter directory (e.g., output of GRPO "
+             "training: nips_results/grpo_qwen25vl_7b_8gpu/adapter_step100). "
+             "If set, applied on top of --policy_model_name.",
+    )
+    parser.add_argument(
+        "--policy_temperature",
+        type=float,
+        default=0.7,
+        help="Sampling temperature for the qwen policy. 0 = greedy (only one sample useful).",
+    )
+    parser.add_argument(
+        "--policy_top_p",
+        type=float,
+        default=1.0,
+        help="top_p for the qwen policy.",
+    )
+    parser.add_argument(
+        "--policy_max_new_tokens",
+        type=int,
+        default=512,
+        help="max_new_tokens for the qwen policy.",
+    )
+
 def get_svc_args():
     
     parser = argparse.ArgumentParser(description="Simple example of Pipeline args.")

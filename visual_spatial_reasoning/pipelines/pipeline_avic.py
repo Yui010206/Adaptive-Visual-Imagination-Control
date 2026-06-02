@@ -23,6 +23,7 @@ from numpy import quaternion
 import multiprocessing
 import re
 from collections import Counter
+from utils.qwen_policy import Qwen3VLPolicy
 
 def resize_to_short_side(img, target_short=512):
     h, w = img.shape[:2]
@@ -215,6 +216,7 @@ def ordered_to_action_consequences(
             sub[label] = p
 
     return action_consequences
+    
 
 
 class SpatialVQAPipelineSVC(PipelineBase):
@@ -237,11 +239,40 @@ class SpatialVQAPipelineSVC(PipelineBase):
         self.model_args.policy_majority_threshold = getattr(self.model_args, "policy_majority_threshold", 0.5)  # >0.5 means strict majority
         self.model_args.max_wm_candidates = getattr(self.model_args, "max_wm_candidates", 5)  # cap WM runs even if more plans sampled
 
+        # ---- Optional Qwen-VL policy model (Qwen3-VL or Qwen2.5-VL) ----
+        # When --policy_model_type is qwen3vl / qwen2.5vl, the gating + action
+        # planning ("policy") step is produced by a local (optionally
+        # LoRA/GRPO-trained) Qwen-VL model instead of the prompted GPT VLM.
+        # Default "gpt" keeps the training-free behaviour unchanged.
+        self.qwen_policy = None
+        if getattr(model_args, "policy_model_type", "gpt") in ("qwen3vl", "qwen2.5vl"):
+            lora_ckpt = getattr(model_args, "policy_lora_ckpt", None) or None
+            print(f"[Policy] Loading {model_args.policy_model_type} policy: "
+                  f"{model_args.policy_model_name}"
+                  + (f"  + LoRA: {lora_ckpt}" if lora_ckpt else ""))
+            self.qwen_policy = Qwen3VLPolicy(
+                model_name=model_args.policy_model_name,
+                interval_meter=model_args.sampling_interval_meter,
+                interval_angle=model_args.sampling_interval_angle,
+                max_atomic_actions=model_args.max_action_ids_cap,
+                lora_ckpt=lora_ckpt,
+            )
+
     # ------------------------------------------------------------------
     #  PUBLIC ENTRY-POINT
     # ------------------------------------------------------------------
     def _sample_policies(self, question, primary_img_path, helper_img_path, n: int):
-        """Return list of (policy_dict, policy_text). Only keep parsed policies."""
+        """Return list of (policy_dict, policy_text). Only keep parsed policies.
+
+        Dispatches between the GPT (self.vlm) policy and the Qwen-VL policy
+        based on --policy_model_type.
+        """
+        if self.qwen_policy is not None:
+            return self._sample_policies_qwen(
+                question, primary_img_path, helper_img_path, n
+            )
+
+        # GPT policy (training-free path)
         policies = []
         for _ in range(n):
             sys_prompt, content = self.vlm.format_prompt(
@@ -256,7 +287,49 @@ class SpatialVQAPipelineSVC(PipelineBase):
             if pol:
                 policies.append((pol, policy_text))
         return policies
-    
+
+    def _sample_policies_qwen(self, question, primary_img_path, helper_img_path, n: int):
+        """Sample policies from the local Qwen-VL model.
+
+        Returns the same shape as the GPT path: list of (policy_dict, policy_text)
+        where policy_dict is {"decision": ..., "actions": <atomic_actions>, "reason": ...}.
+        """
+        images = [primary_img_path, helper_img_path] if helper_img_path else [primary_img_path]
+
+        # n samples means we need diverse outputs -> need temperature > 0
+        temperature = self.model_args.policy_temperature
+        if n > 1 and temperature <= 0:
+            print(
+                f"[Policy] policy_temperature={temperature} but num_policy_samples={n}; "
+                "outputs will be near-identical. Set --policy_temperature > 0 for diversity."
+            )
+
+        policies = []
+        for i in range(n):
+            result = self.qwen_policy.plan(
+                question=question["question"],
+                answer_choices=question["answer_choices"],
+                images=images,
+                max_new_tokens=self.model_args.policy_max_new_tokens,
+                temperature=temperature,
+                top_p=self.model_args.policy_top_p,
+                max_retries=self.model_args.max_tries_gpt,
+            )
+            print(f"[Policy Planning {i}]: decision={result['decision']} "
+                  f"reason={result['reason'][:80]} parse_ok={result['parse_ok']}")
+
+            if not result["parse_ok"]:
+                continue
+
+            # Translate to the dict shape the rest of the pipeline expects.
+            pol = {
+                "decision": result["decision"],
+                "actions": result["atomic_actions"],
+                "reason": result["reason"],
+            }
+            policies.append((pol, result["raw_response"]))
+        return policies
+
     def _majority_vote_decision(self, policies):
         """policies: list of (policy_dict, policy_text). Return decision + counts."""
         if not policies:

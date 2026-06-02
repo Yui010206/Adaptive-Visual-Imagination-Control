@@ -19,19 +19,28 @@ Figure 1. Different cases in always-on visual imagination. Imagined views are ge
 
 ## for visual spatial reasoning
 
-Please follow [Mindjourney](https://github.com/UMass-Embodied-AGI/MindJourney/tree/main?tab=readme-ov-file) instructions for environment installation and data downloading. 
+A single Conda environment holds the VLM framework, the SVC world model, and the
+RL training stack:
 
 ```bash
 cd visual_spatial_reasoning
-conda create -n mindjourney_svc python=3.10 -y
-conda activate mindjourney_svc
+conda create -n avic python=3.11 -y
+conda activate avic
 
-# Editable install of the SVC module (dependencies defined in pyproject.toml)
+# CUDA 12.6 builds of PyTorch (adjust to your CUDA)
+pip install torch==2.6.0+cu126 torchvision==0.21.0+cu126 torchaudio==2.6.0+cu126 \
+  --extra-index-url https://download.pytorch.org/whl/cu126
+
+# Stable Virtual Camera world model (editable install; deps in pyproject.toml)
 pip install -e stable_virtual_camera/
 
-# Optionally reuse shared utilities if needed
-pip install -r requirements_svc.txt
+# Extra deps for RL (GRPO) policy training
+pip install -r requirements_train.txt
 ```
+
+See [`visual_spatial_reasoning/README.md`](visual_spatial_reasoning/README.md)
+for the full environment, data-preparation, training-free, and RL-training
+instructions, including how to download the SAT dataset.
 
 ## for navigation
 
@@ -56,10 +65,28 @@ please set up your API keys in api.py for both tasks before running experiments.
 
 
 ## visual spatial reasoning
+
+Training-free AVIC (closed-source VLM + SVC world model):
+
 ```bash
 cd visual_spatial_reasoning
 sh scripts/pipeline_avic.sh
 ```
+
+RL-trained policy (GRPO). Prepare the `train` split, then train and evaluate:
+
+```bash
+cd visual_spatial_reasoning
+python utils/data_process.py --split train      # train images for RL
+sh scripts/train_qwen_grpo.sh                    # 8-GPU online GRPO training
+sh scripts/batch_eval_ckpts.sh nips_results/<run_dir>   # evaluate checkpoints
+```
+
+Our best policy is the `adapter_step140` LoRA adapter (Qwen2.5-VL-7B base,
++6 pts over base on SAT test). The checkpoint will be released on Hugging Face;
+its exact training and evaluation settings are documented in
+[`visual_spatial_reasoning/README.md`](visual_spatial_reasoning/README.md),
+which also covers data preparation, hyperparameters, and the full RL pipeline.
 
 ## navigation
 

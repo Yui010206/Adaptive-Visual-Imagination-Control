@@ -1,0 +1,16 @@
+# Extra dependencies for RL (GRPO) policy training, on top of the main
+# MindJourney/AVIC runtime environment. Install inside the `mindjourney` env.
+#
+#   pip install -r requirements_train.txt
+#
+# These versions match the setup used for the released checkpoints; nearby
+# versions generally work, but peft<->transformers skew can break LoRA
+# state-dict loading (see the workaround note in training/qwen_grpo.py).
+
+transformers==4.56.2
+accelerate==1.10.1
+peft>=0.13,<0.20
+wandb==0.22.0
+qwen-vl-utils
+# deepspeed is optional (not required for the 8xGPU DDP torchrun launcher):
+# deepspeed==0.17.6
