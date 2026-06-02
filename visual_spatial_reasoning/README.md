@@ -284,7 +284,7 @@ huggingface-cli download Shoubin/AVIC-Qwen2.5-VL-7B-policy \
 # the LoRA adapter lives at checkpoints/AVIC-Qwen2.5-VL-7B-policy/adapter_step140
 ```
 
-### Training setting that produced `adapter_step140`
+### Training setting
 
 Driver: `scripts/train_qwen_grpo.sh` (8-GPU `torchrun`, effective batch = 8
 questions/step). To reproduce from scratch, set `resume_adapter=""` and
@@ -302,7 +302,7 @@ questions/step). To reproduce from scratch, set `resume_adapter=""` and
 | WM / action | `max_action_ids_cap=6`, `max_atomic_actions=6`, `sampling_interval_meter=0.25`, `sampling_interval_angle=9` |
 | SVC | `task=img2trajvid_s-prob`, `cfg=4.0`, `guider=1`, `L_short=576`, `num_targets=8`, `use_traj_prior=True`, `chunk_strategy=interp`, `frame_interval=3`, `max_images=2` |
 
-### Eval setting for `adapter_step140`
+### Eval setting
 
 Driver: `scripts/inference_avic_rl_parallel.sh` (set
 `policy_lora_ckpt=<...>/adapter_step140`) or
