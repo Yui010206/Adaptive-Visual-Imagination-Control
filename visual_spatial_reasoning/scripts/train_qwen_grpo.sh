@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 8-GPU torchrun launcher for online GRPO training of the Qwen2.5-VL-7B policy.
 # Effective batch = 8 GPUs * per_device_batch_size(=1) * grad_accum_steps(=1) = 8 questions/step.
-# (Reverted to the step-140 config; the step-140 adapter beat base by +6 pts overall.)
+# (Reverted to the step-140 config; the step-140 adapter is the best-performing one.)
 
 export WORLD_MODEL_TYPE="svc"
 export PYTHONPATH=$PYTHONPATH:./

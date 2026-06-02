@@ -82,9 +82,10 @@ sh scripts/train_qwen_grpo.sh                    # 8-GPU online GRPO training
 sh scripts/batch_eval_ckpts.sh nips_results/<run_dir>   # evaluate checkpoints
 ```
 
-Our best policy is the `adapter_step140` LoRA adapter (Qwen2.5-VL-7B base,
-+6 pts over base on SAT test). The checkpoint will be released on Hugging Face;
-its exact training and evaluation settings are documented in
+Our best policy is the `adapter_step140` LoRA adapter (Qwen2.5-VL-7B base),
+released on Hugging Face:
+[Shoubin/AVIC-Qwen2.5-VL-7B-policy](https://huggingface.co/Shoubin/AVIC-Qwen2.5-VL-7B-policy).
+Its exact training and evaluation settings are documented in
 [`visual_spatial_reasoning/README.md`](visual_spatial_reasoning/README.md),
 which also covers data preparation, hyperparameters, and the full RL pipeline.
 

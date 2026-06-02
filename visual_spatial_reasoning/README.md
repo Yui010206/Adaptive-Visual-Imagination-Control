@@ -273,14 +273,13 @@ EVAL_NUM_QUESTIONS=50 bash scripts/train_then_eval.sh
 ## Released checkpoint (best setting)
 
 Our best-performing policy is the **`adapter_step140`** LoRA adapter
-(`Qwen/Qwen2.5-VL-7B-Instruct` base). It beats the base policy by **+6 points
-overall** on the SAT test set.
+(`Qwen/Qwen2.5-VL-7B-Instruct` base), released on Hugging Face:
+[Shoubin/AVIC-Qwen2.5-VL-7B-policy](https://huggingface.co/Shoubin/AVIC-Qwen2.5-VL-7B-policy).
 
-**Download** (coming soon — update the repo id once uploaded):
+**Download:**
 
 ```bash
-# https://huggingface.co/<HF_USERNAME>/AVIC-Qwen2.5-VL-7B-policy
-huggingface-cli download <HF_USERNAME>/AVIC-Qwen2.5-VL-7B-policy \
+huggingface-cli download Shoubin/AVIC-Qwen2.5-VL-7B-policy \
     --local-dir checkpoints/AVIC-Qwen2.5-VL-7B-policy
 # the LoRA adapter lives at checkpoints/AVIC-Qwen2.5-VL-7B-policy/adapter_step140
 ```
