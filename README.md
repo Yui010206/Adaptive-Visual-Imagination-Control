@@ -1,4 +1,4 @@
-# When and How Much to Imagine: Adaptive Test-Time Scaling with World Models for Visual Spatial Reasoning
+# [NeurIPS 2026] When and How Much to Imagine: Adaptive Test-Time Scaling with World Models for Visual Spatial Reasoning
 
 This is the official implementation for adaptive visual imagination control
 
